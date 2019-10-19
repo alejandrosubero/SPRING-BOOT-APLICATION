@@ -31,6 +31,10 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private boolean checkPasswordValid(User user) throws Exception {
+		if(user.getConfirmPassword()==null || user.getConfirmPassword().isEmpty()) {
+			throw new Exception("Confirme el password es obligatorio");
+		}
+		
 		
 		if(!user.getPassword().equals(user.getConfirmPassword())) {
 			throw new Exception("password y confirm password no so iguales");

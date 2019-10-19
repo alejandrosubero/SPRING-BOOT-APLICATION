@@ -52,7 +52,7 @@ public class User implements Serializable {
 	
 	@Column
 	@NotBlank
-	@Size(min = 3, max = 9, message = "se requere de 3 a 6 caracteres")
+	@Size(min = 3, max = 9, message = "se requere de 3 a 9 caracteres")
 	private String password;
 
 	@Transient

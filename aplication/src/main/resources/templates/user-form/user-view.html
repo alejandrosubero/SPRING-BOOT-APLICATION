@@ -8,8 +8,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 <!-- FRAMEWORK BOOTSTRAP para el estilo de la pagina-->
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<link rel="stylesheet" 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -21,13 +20,11 @@
 	crossorigin="anonymous"></script>
 
 <!-- Los iconos tipo Solid de Fontawesome-->
-<link rel="stylesheet"
-	href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
+<link rel="stylesheet" 	href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
 <script src="https://use.fontawesome.com/releases/v5.0.7/js/all.js"></script>
 
 <!-- Nuestro css-->
-<link rel="stylesheet" type="text/css" href="static/css/user-form.css"
-	th:href="@{/css/user-form.css}">
+<link rel="stylesheet" type="text/css" href="static/css/user-form.css" 	th:href="@{/css/user-form.css}">
 <!-- DATA TABLE -->
 <script
 	src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -47,6 +44,7 @@
 </head>
 <body>
 	<div class="container">
+	
 		<div class="mx-auto col-sm-8 main-section" id="myTab" role="tablist">
 			<ul class="nav nav-tabs justify-content-end">
 				<li class="nav-item">
@@ -59,13 +57,12 @@
 					data-toggle="tab" href="#form" role="tab" aria-controls="form"
 					aria-selected="true">Form</a></li>
 			</ul>
-			<div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade show active" id="list" role="tabpanel"
-					aria-labelledby="list-tab">
+			
+			<div class="tab-content" id="myTabContent"> 
+				<div class="tab-pane fade show" th:classappend=" ${listTab}" id="list" role="tabpanel" aria-labelledby="list-tab">
 					<div class="card">
-						<div class="card-header">
-							<h4>Roster</h4>
-						</div>
+					
+						<div class="card-header"> <h4>Roster</h4> </div>
 						<div class="card-body">
 
 							<div th:include="user-form/user-list.html" th:remove="tag"></div>
@@ -73,12 +70,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="tab-pane fade" id="form" role="tabpanel"
-					aria-labelledby="form-tab">
+				<div class="tab-pane fade show" th:classappend=" ${formTab}" id="form" role="tabpanel"  aria-labelledby="form-tab">
+					
 					<div class="card">
-						<div class="card-header">
-							<h4>User Information</h4>
-						</div>
+						<div class="card-header"> <h4>User Information</h4> </div>
 						<div class="card-body">
 
 							<div th:include="user-form/user-form.html" th:remove="tag"></div>

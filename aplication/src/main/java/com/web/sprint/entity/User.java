@@ -34,7 +34,7 @@ public class User implements Serializable {
 	
 	@Column 
 	@NotBlank
-	@Size(min = 4, max = 9, message = "no cumple con las reglas del tamaño")
+	@Size(min = 4, max = 15, message = "no cumple con las reglas del tamaño")
 	private String firstName;
 	
 	@Column 
@@ -52,11 +52,10 @@ public class User implements Serializable {
 	
 	@Column
 	@NotBlank
-	@Size(min = 3, max = 9, message = "se requere de 3 a 9 caracteres")
+	@Size(min = 3, max = 15, message = "se requere de 3 a 9 caracteres")
 	private String password;
 
 	@Transient
-	@NotBlank
 	private String confirmPassword;
 	
 	

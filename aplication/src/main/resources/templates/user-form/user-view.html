@@ -27,13 +27,15 @@
 	<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.css">	
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
-	
+<!-- 	<script type="text/javascript" th:src="@{/js/angular.js}"/></script> -->
 <script type="text/javascript">
 	$(document).ready(function() {
 		//Asegurate que el id que le diste a la tabla sea igual al texto despues del simbolo #
 		$('#userList').DataTable();
 	});
 </script>
+
+
 </head>
 <body>
 	<div class="container">
@@ -49,6 +51,12 @@
 				<li class="nav-item"><a class="nav-link"  th:classappend=" ${formTab}" id="form-tab"
 					data-toggle="tab" href="#form" role="tab" aria-controls="form"
 					aria-selected="true">Form</a></li>
+				
+				
+				<li class="nav-item">
+					<a class="nav-link" href="#" th:href="@{/logout}"><span th:text="${#authentication.getPrincipal().getUsername()}"></span> - <span>logout  </span><span class="float-right"><i class="fas fa-sign-out-alt"></i></span></a>	
+					</li>
+					
 			</ul>
 			
 			<div class="tab-content" id="myTabContent"> 

@@ -1,5 +1,7 @@
 package com.web.sprint.controller;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.web.sprint.dto.ChangePasswordForm;
+import com.web.sprint.entity.Role;
 import com.web.sprint.entity.User;
 import com.web.sprint.entity.service.UserService;
 import com.web.sprint.exception.CustomeFieldValidationException;
@@ -33,11 +36,48 @@ public class UserController {
 	@Autowired
 	RoleRepository roleRepository;
 	
+
 	
 	@GetMapping({"/","/login"})
 	public String index() {
 		return "index";
 	}
+
+	@GetMapping("/signup")
+	public String signup(Model model) {
+		Role userRole = roleRepository.findByName("USER");
+		List<Role> roles=Arrays.asList(userRole);
+		model.addAttribute("userForm", new User());
+		model.addAttribute("roles",roles);
+		model.addAttribute("signup", true);
+		return  "user-form/user-signup";
+	}
+	
+	@PostMapping("/signup")
+	public String signupAction(@Valid @ModelAttribute("userForm")User user, BindingResult result, ModelMap model) {
+		
+		Role userRole = roleRepository.findByName("USER");
+		List<Role> roles = Arrays.asList(userRole);
+		model.addAttribute("userForm", user);
+		model.addAttribute("roles",roles);
+		model.addAttribute("signup",true);
+
+		if(result.hasErrors()) {
+			return "user-form/user-signup";
+		}else {
+			try {
+				userService.createUser(user);
+			} catch (CustomeFieldValidationException cfve) {
+				result.rejectValue(cfve.getFieldName(), null, cfve.getMessage());
+			}catch (Exception e) {
+				model.addAttribute("formErrorMessage",e.getMessage());
+			}
+		}
+		return index();
+	}
+	
+	
+	
 	
 	@GetMapping("/userForm")
 	public String getUserForm(Model model) {

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.web.sprint.dto.ChangePasswordForm;
 import com.web.sprint.entity.User;
 import com.web.sprint.entity.service.UserService;
+import com.web.sprint.exception.CustomeFieldValidationException;
+import com.web.sprint.exception.UsernameOrIdNotFound;
 import com.web.sprint.repository.RoleRepository;
 
 @Controller
@@ -60,7 +62,14 @@ public class UserController {
 				model.addAttribute("userForm",new User());
 				model.addAttribute("listTab","active");
 				
-			} catch (Exception e) {
+			} catch (CustomeFieldValidationException cfve) {
+				result.rejectValue(cfve.getFieldName(), null, cfve.getMessage());
+				model.addAttribute("userForm", user);
+				model.addAttribute("formTab","active");
+				model.addAttribute("userList",userService.getAllUsers());
+				model.addAttribute("roles",roleRepository.findAll());
+				
+			}catch (Exception e) {
 				model.addAttribute("formErrorMenssage", e.getMessage());
 				model.addAttribute("userForm", user);
 				model.addAttribute("formTab","active");
@@ -130,8 +139,8 @@ public class UserController {
 		
 		try {
 			userService.deleteUser(id);
-		} catch (Exception e) {
-			model.addAttribute("ListErrorMenssage","The user could not be deleted.");
+		} catch (UsernameOrIdNotFound uoin) {
+			model.addAttribute("ListErrorMenssage",uoin.getMessage());
 		}
 		return getUserForm(model);
 	}

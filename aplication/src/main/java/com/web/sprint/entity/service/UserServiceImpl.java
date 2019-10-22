@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.web.sprint.dto.ChangePasswordForm;
 import com.web.sprint.entity.User;
+import com.web.sprint.exception.CustomeFieldValidationException;
+import com.web.sprint.exception.UsernameOrIdNotFound;
 import com.web.sprint.repository.UserRepository;
 
 @Service
@@ -32,19 +34,19 @@ public class UserServiceImpl implements UserService{
 		
 		Optional<User> userFond = repository.findByUsername(user.getUsername());
 		if (userFond.isPresent()) {
-			throw new Exception("userName no esta disponible");
+			throw new CustomeFieldValidationException("userName no esta disponible", "username");
 		}
 		return true;
 	}
 	
 	private boolean checkPasswordValid(User user) throws Exception {
 		if(user.getConfirmPassword()==null || user.getConfirmPassword().isEmpty()) {
-			throw new Exception("Confirme el password es obligatorio");
+			throw new CustomeFieldValidationException("Confirme el password es obligatorio", "confirPassword");
 		}
 		
 		
 		if(!user.getPassword().equals(user.getConfirmPassword())) {
-			throw new Exception("password y confirm password no so iguales");
+			throw new CustomeFieldValidationException("password y confirm password no so iguales","password");
 		}
 		return true;
 	}
@@ -53,7 +55,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public User createUser(User user) throws Exception {
 	
-		BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(4);
+		//BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(4);
 		
 		if (checkUsernameAvailable(user) && checkPasswordValid(user)) {
 			String encodePassword =bCryptPasswordEncoder.encode(user.getPassword());//encripta el passwork
@@ -65,9 +67,9 @@ public class UserServiceImpl implements UserService{
 
 
 	@Override
-	public User getUserById(Long id) throws Exception {
+	public User getUserById(Long id) throws UsernameOrIdNotFound {
 		
-		User user = repository.findById(id).orElseThrow(() -> new Exception("User does not exist"));
+		User user = repository.findById(id).orElseThrow(() -> new UsernameOrIdNotFound("the User id does not exist"));
 		return user;
 	}
 
@@ -97,7 +99,7 @@ public class UserServiceImpl implements UserService{
 
 
 	@Override
-	public void deleteUser(Long id) throws Exception {
+	public void deleteUser(Long id) throws UsernameOrIdNotFound {
 		User user = getUserById(id);
 		repository.delete(user);
 	}
@@ -125,8 +127,49 @@ public class UserServiceImpl implements UserService{
 		return repository.save(user);
 	}
 	
+	private boolean isLoggedUserADMIN() {
+		//Obtener el usuario logeado
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		UserDetails loggedUser = null;
+		Object roles = null;
+
+		//Verificar que ese objeto traido de sesion es el usuario
+		if (principal instanceof UserDetails) {
+			loggedUser = (UserDetails) principal;
+
+			roles = loggedUser.getAuthorities().stream()
+					.filter(x -> "ROLE_ADMIN".equals(x.getAuthority())).findFirst()
+					.orElse(null); 
+		}
+		return roles != null ? true : false;
+	}
 	
-	public boolean isLoggedUserADMIN(){
+	
+	
+	//Obtener el usuario logeado
+	public User getLoggedUser() throws Exception {
+		
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		
+		UserDetails loggedUser = null;
+
+		//Verificar que ese objeto traido de sesion es el usuario
+		if (principal instanceof UserDetails) {
+			loggedUser = (UserDetails) principal;
+		}
+		
+		User myUser = repository
+				.findByUsername(loggedUser.getUsername()).orElseThrow(() -> new Exception("Problemas obteniendo usuario de la sección"));
+		
+		return myUser;
+	}
+	
+	
+	
+	
+	
+	/*public boolean isLoggedUserADMIN(){
 		 return loggedUserHasRole("ROLE_ADMIN");
 		}
 
@@ -144,7 +187,6 @@ public class UserServiceImpl implements UserService{
 			return roles != null ?true :false;
 		}
 	
-/*
  * 
  * private boolean checkUserNameExists(User user) throws Exception  {
  
